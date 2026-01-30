@@ -1,0 +1,148 @@
+{
+  "products": {
+    "1": {
+      "id": "1",
+      "name": "Premium Silk Evening Gown",
+      "brand": "LuxeWear",
+      "category": "Dresses",
+      "barcode": "RV001SKG",
+      "imageUrl": "https://images.unsplash.com/photo-1595777721583-21b46ae8e9ad?w=500&h=600&fit=crop",
+      "description": "Elegant silk evening gown with hand-stitched details and premium finishing. Perfect for formal occasions and celebrations.",
+      "sizes": [
+        {"size": "XS", "mrp": 3500, "sellingPrice": 2100, "stock": 5},
+        {"size": "S", "mrp": 3500, "sellingPrice": 2100, "stock": 8},
+        {"size": "M", "mrp": 3500, "sellingPrice": 2100, "stock": 12},
+        {"size": "L", "mrp": 3500, "sellingPrice": 2100, "stock": 7},
+        {"size": "XL", "mrp": 3700, "sellingPrice": 2220, "stock": 4}
+      ],
+      "totalStock": 36,
+      "rating": 4.5,
+      "ratingCount": 12
+    },
+    "2": {
+      "id": "2",
+      "name": "Classic Cotton T-Shirt",
+      "brand": "StyleFit",
+      "category": "T-Shirts",
+      "barcode": "RV002CTS",
+      "imageUrl": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500&h=600&fit=crop",
+      "description": "Premium quality 100% cotton t-shirt with superior comfort. Available in multiple colors and designs.",
+      "sizes": [
+        {"size": "S", "mrp": 899, "sellingPrice": 499, "stock": 25},
+        {"size": "M", "mrp": 899, "sellingPrice": 499, "stock": 30},
+        {"size": "L", "mrp": 899, "sellingPrice": 499, "stock": 20},
+        {"size": "XL", "mrp": 999, "sellingPrice": 549, "stock": 15},
+        {"size": "XXL", "mrp": 1099, "sellingPrice": 599, "stock": 10}
+      ],
+      "totalStock": 100,
+      "rating": 4,
+      "ratingCount": 45
+    },
+    "3": {
+      "id": "3",
+      "name": "Designer Blazer",
+      "brand": "ChicMode",
+      "category": "Blazers",
+      "barcode": "RV003DBL",
+      "imageUrl": "https://images.unsplash.com/photo-1591047990259-715b0adb49a1?w=500&h=600&fit=crop",
+      "description": "Modern tailored blazer with perfect fit for professional and casual wear. Premium fabric with excellent draping.",
+      "sizes": [
+        {"size": "XS", "mrp": 4500, "sellingPrice": 2700, "stock": 4},
+        {"size": "S", "mrp": 4500, "sellingPrice": 2700, "stock": 6},
+        {"size": "M", "mrp": 4500, "sellingPrice": 2700, "stock": 8},
+        {"size": "L", "mrp": 4500, "sellingPrice": 2700, "stock": 6},
+        {"size": "XL", "mrp": 4800, "sellingPrice": 2880, "stock": 3}
+      ],
+      "totalStock": 27,
+      "rating": 4.5,
+      "ratingCount": 18
+    },
+    "4": {
+      "id": "4",
+      "name": "Elegant Saree",
+      "brand": "TraditionalLux",
+      "category": "Traditional",
+      "barcode": "RV004ELS",
+      "imageUrl": "https://images.unsplash.com/photo-1610271340738-f049cd451e7d?w=500&h=600&fit=crop",
+      "description": "Traditional silk saree with intricate embroidery and zari work. Perfect for weddings and festivals.",
+      "sizes": [
+        {"size": "Free", "mrp": 5500, "sellingPrice": 3300, "stock": 10}
+      ],
+      "totalStock": 10,
+      "rating": 5,
+      "ratingCount": 8
+    },
+    "5": {
+      "id": "5",
+      "name": "Denim Jeans",
+      "brand": "DenimWorld",
+      "category": "Jeans",
+      "barcode": "RV005DJN",
+      "imageUrl": "https://images.unsplash.com/photo-1542272604-787c62d465d1?w=500&h=600&fit=crop",
+      "description": "Premium quality denim jeans with perfect fit. Durable and comfortable for everyday wear.",
+      "sizes": [
+        {"size": "28", "mrp": 2499, "sellingPrice": 1299, "stock": 12},
+        {"size": "30", "mrp": 2499, "sellingPrice": 1299, "stock": 15},
+        {"size": "32", "mrp": 2499, "sellingPrice": 1299, "stock": 18},
+        {"size": "34", "mrp": 2499, "sellingPrice": 1299, "stock": 14},
+        {"size": "36", "mrp": 2699, "sellingPrice": 1399, "stock": 10}
+      ],
+      "totalStock": 69,
+      "rating": 4,
+      "ratingCount": 35
+    },
+    "6": {
+      "id": "6",
+      "name": "Luxury Handbag",
+      "brand": "LuxeAccess",
+      "category": "Accessories",
+      "barcode": "RV006LHB",
+      "imageUrl": "https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&h=600&fit=crop",
+      "description": "Premium leather handbag with elegant design. Perfect for professional and casual occasions.",
+      "sizes": [
+        {"size": "One Size", "mrp": 6999, "sellingPrice": 3999, "stock": 8}
+      ],
+      "totalStock": 8,
+      "rating": 4.5,
+      "ratingCount": 22
+    },
+    "7": {
+      "id": "7",
+      "name": "Casual Shirt",
+      "brand": "ComfortFit",
+      "category": "Shirts",
+      "barcode": "RV007CAS",
+      "imageUrl": "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=500&h=600&fit=crop",
+      "description": "Comfortable and stylish casual shirt perfect for everyday wear. High-quality fabric with excellent finishing.",
+      "sizes": [
+        {"size": "S", "mrp": 1499, "sellingPrice": 749, "stock": 20},
+        {"size": "M", "mrp": 1499, "sellingPrice": 749, "stock": 25},
+        {"size": "L", "mrp": 1499, "sellingPrice": 749, "stock": 20},
+        {"size": "XL", "mrp": 1599, "sellingPrice": 799, "stock": 15},
+        {"size": "XXL", "mrp": 1699, "sellingPrice": 849, "stock": 10}
+      ],
+      "totalStock": 90,
+      "rating": 4,
+      "ratingCount": 28
+    },
+    "8": {
+      "id": "8",
+      "name": "Summer Dress",
+      "brand": "SummerStyle",
+      "category": "Dresses",
+      "barcode": "RV008SUM",
+      "imageUrl": "https://images.unsplash.com/photo-1595607774223-ca3277ca5056?w=500&h=600&fit=crop",
+      "description": "Light and breezy summer dress perfect for warm weather. Comfortable and fashionable design.",
+      "sizes": [
+        {"size": "XS", "mrp": 2299, "sellingPrice": 1299, "stock": 6},
+        {"size": "S", "mrp": 2299, "sellingPrice": 1299, "stock": 10},
+        {"size": "M", "mrp": 2299, "sellingPrice": 1299, "stock": 14},
+        {"size": "L", "mrp": 2299, "sellingPrice": 1299, "stock": 10},
+        {"size": "XL", "mrp": 2499, "sellingPrice": 1399, "stock": 6}
+      ],
+      "totalStock": 46,
+      "rating": 4.5,
+      "ratingCount": 31
+    }
+  }
+}
