@@ -661,7 +661,28 @@
       window.loadDashboard = () => {};
       window.loadInventory = () => {};
       window.loadOrdersAdmin = () => {};
-    </script>
-    <script type="module" src="assets/js/main.js"></script>
+        </script>
+
+        <!-- Mobile Bottom Navigation -->
+        <nav id="mobileBottomNav" class="mobile-bottom-nav">
+            <button class="nav-btn" onclick="showPage('shop'); displayProducts(allProducts);">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Home</div>
+            </button>
+            <button class="nav-btn" onclick="showPage('cart')">
+                <div class="nav-icon">🛍️<span id="mobileCartCount" class="nav-badge">0</span></div>
+                <div class="nav-label">Cart</div>
+            </button>
+            <button class="nav-btn" onclick="showPage('wishlist')">
+                <div class="nav-icon">❤️<span id="mobileWishlistCount" class="nav-badge" style="display:none">0</span></div>
+                <div class="nav-label">Wishlist</div>
+            </button>
+            <button class="nav-btn" onclick="toggleUserMenu()">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Account</div>
+            </button>
+        </nav>
+
+        <script type="module" src="assets/js/main.js"></script>
 </body>
 </html>

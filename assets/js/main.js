@@ -805,6 +805,39 @@ function initFilterDrawer() {
 function updateCartCount() {
   const total = CartManager.getCartTotal();
   document.getElementById('cartCount').textContent = total.itemCount;
+  // Update mobile badges too
+  updateMobileCounts();
+}
+// Keep mobile nav counts in sync
+function updateMobileCounts() {
+  const total = CartManager.getCartTotal();
+  const mobileCart = document.getElementById('mobileCartCount');
+  if (mobileCart) {
+    mobileCart.textContent = total.itemCount;
+    mobileCart.style.display = total.itemCount > 0 ? 'inline-flex' : 'none';
+  }
+  const wishlistCount = WishlistManager.getWishlistCount();
+  const mobileWish = document.getElementById('mobileWishlistCount');
+  if (mobileWish) {
+    mobileWish.textContent = wishlistCount;
+    mobileWish.style.display = wishlistCount > 0 ? 'inline-flex' : 'none';
+  }
+}
+
+// Keep mobile nav counts in sync
+function updateMobileCounts() {
+  const total = CartManager.getCartTotal();
+  const mobileCart = document.getElementById('mobileCartCount');
+  if (mobileCart) {
+    mobileCart.textContent = total.itemCount;
+    mobileCart.style.display = total.itemCount > 0 ? 'inline-flex' : 'none';
+  }
+  const wishlistCount = WishlistManager.getWishlistCount();
+  const mobileWish = document.getElementById('mobileWishlistCount');
+  if (mobileWish) {
+    mobileWish.textContent = wishlistCount;
+    mobileWish.style.display = wishlistCount > 0 ? 'inline-flex' : 'none';
+  }
 }
 
 async function quickAddToCart(productId) {
@@ -856,6 +889,12 @@ function updateWishlistCount() {
   if (badge) {
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
+  }
+  // Also update mobile badge
+  const mobileWish = document.getElementById('mobileWishlistCount');
+  if (mobileWish) {
+    mobileWish.textContent = count;
+    mobileWish.style.display = count > 0 ? 'inline-flex' : 'none';
   }
 }
 
