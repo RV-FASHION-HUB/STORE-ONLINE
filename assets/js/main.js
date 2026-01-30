@@ -474,6 +474,7 @@ async function showProductDetail(productId) {
   `;
   
   modal.classList.add('active');
+  document.body.classList.add('modal-open');
 }
 
 function selectSize(element) {
@@ -572,6 +573,7 @@ window.selectRating = selectRating;
 
 function closeProductDetail() {
   document.getElementById('productDetailModal').classList.remove('active');
+  document.body.classList.remove('modal-open');
 }
 
 window.closeProductDetail = closeProductDetail;
@@ -732,12 +734,42 @@ window.resetFilters = resetFilters;
 window.handleMainSearch = handleMainSearch;
 window.filterByCategory = filterByCategory;
 
-// ========== FILTER TABS ==========
+// ========== FILTER DROPDOWN TOGGLE ==========
+function toggleDropdown(dropdownId) {
+  const dropdown = document.getElementById(dropdownId);
+  if (dropdown) {
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+  }
+  
+  // Close other dropdowns
+  document.querySelectorAll('.filter-dropdown-content').forEach(el => {
+    if (el.id !== dropdownId) {
+      el.style.display = 'none';
+    }
+  });
+}
+
+// Close dropdowns when clicking outside
+document.addEventListener('click', function(event) {
+  if (!event.target.closest('.filter-dropdown')) {
+    document.querySelectorAll('.filter-dropdown-content').forEach(el => {
+      el.style.display = 'none';
+    });
+  }
+});
+
+window.toggleDropdown = toggleDropdown;
+
+// ========== FILTER TABS (Deprecated - kept for backward compatibility) ==========
 function switchFilterTab(tabName) {
   // Hide all tab contents
-  document.getElementById('searchTabContent').style.display = 'none';
-  document.getElementById('brandTabContent').style.display = 'none';
-  document.getElementById('priceTabContent').style.display = 'none';
+  const searchTab = document.getElementById('searchTabContent');
+  const brandTab = document.getElementById('brandTabContent');
+  const priceTab = document.getElementById('priceTabContent');
+  
+  if (searchTab) searchTab.style.display = 'none';
+  if (brandTab) brandTab.style.display = 'none';
+  if (priceTab) priceTab.style.display = 'none';
   
   // Remove active class from all tabs
   document.querySelectorAll('.filter-tab').forEach(tab => {
@@ -747,13 +779,18 @@ function switchFilterTab(tabName) {
   });
   
   // Show selected tab content
-  document.getElementById(tabName + 'TabContent').style.display = 'block';
+  const selectedTab = document.getElementById(tabName + 'TabContent');
+  if (selectedTab) {
+    selectedTab.style.display = 'block';
+  }
   
   // Add active class to clicked tab
-  const activeTab = event.target;
-  activeTab.style.color = 'var(--primary-color)';
-  activeTab.style.borderBottom = '3px solid var(--primary-color)';
-  activeTab.style.marginBottom = '-2px';
+  if (event && event.target) {
+    const activeTab = event.target;
+    activeTab.style.color = 'var(--primary-color)';
+    activeTab.style.borderBottom = '3px solid var(--primary-color)';
+    activeTab.style.marginBottom = '-2px';
+  }
 }
 
 window.switchFilterTab = switchFilterTab;
@@ -808,22 +845,6 @@ function updateCartCount() {
   // Update mobile badges too
   updateMobileCounts();
 }
-// Keep mobile nav counts in sync
-function updateMobileCounts() {
-  const total = CartManager.getCartTotal();
-  const mobileCart = document.getElementById('mobileCartCount');
-  if (mobileCart) {
-    mobileCart.textContent = total.itemCount;
-    mobileCart.style.display = total.itemCount > 0 ? 'inline-flex' : 'none';
-  }
-  const wishlistCount = WishlistManager.getWishlistCount();
-  const mobileWish = document.getElementById('mobileWishlistCount');
-  if (mobileWish) {
-    mobileWish.textContent = wishlistCount;
-    mobileWish.style.display = wishlistCount > 0 ? 'inline-flex' : 'none';
-  }
-}
-
 // Keep mobile nav counts in sync
 function updateMobileCounts() {
   const total = CartManager.getCartTotal();
@@ -1127,11 +1148,13 @@ function displayCheckout() {
 
 function showAddressForm() {
   document.getElementById('addressFormModal').classList.add('active');
+  document.body.classList.add('modal-open');
 }
 
 function closeAddressForm() {
   document.getElementById('addressFormModal').classList.remove('active');
   document.getElementById('addressFormModal2').classList.remove('active');
+  document.body.classList.remove('modal-open');
 }
 
 async function saveAddress(e) {
@@ -1292,6 +1315,7 @@ function showPaymentQR(paymentUrl) {
     imgContainer.innerHTML = `<a href="${paymentUrl}" style="display:block;"><img src="${qrSrc}" alt="Scan to pay" style="max-width: 100%; height: auto;"/></a>`;
     // Use the modal's active class so CSS centers it properly
     modal.classList.add('active');
+    document.body.classList.add('modal-open');
     // QR is displayed in the modal; do not auto-open a new tab so users stay on the payment page.
 }
 
@@ -1481,6 +1505,7 @@ async function displayAddressesManagement() {
 
 function openAddressForm() {
   document.getElementById('addressFormModal2').classList.add('active');
+  document.body.classList.add('modal-open');
 }
 
 function editAddress(addressId) {
@@ -1495,6 +1520,7 @@ function editAddress(addressId) {
   
   document.getElementById('addressFormModal2').dataset.editId = addressId;
   document.getElementById('addressFormModal2').classList.add('active');
+  document.body.classList.add('modal-open');
 }
 
 async function saveAddressManagement(e) {
@@ -1783,11 +1809,13 @@ async function deleteReviewAdmin(reviewId) {
 
 function openProductForm() {
   document.getElementById('productFormModal').classList.add('active');
+  document.body.classList.add('modal-open');
 }
 
 function closeProductForm() {
   editingProductId = null; // Reset editing flag
   document.getElementById('productFormModal').classList.remove('active');
+  document.body.classList.remove('modal-open');
   document.querySelector('#productFormModal form').reset();
   document.getElementById('sizesContainer').innerHTML = `
     <div class="size-entry" style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: 8px; margin-bottom: 10px; align-items: end;">
@@ -2305,3 +2333,8 @@ window.loadReviewsAdmin = loadReviewsAdmin;
 window.deleteReviewAdmin = deleteReviewAdmin;
 window.addSizeField = addSizeField;
 window.editProductAdmin = editProductAdmin;
+// Expose allProducts to global scope for onclick handlers
+Object.defineProperty(window, 'allProducts', {
+  get: function() { return allProducts; },
+  set: function(val) { allProducts = val; }
+});
