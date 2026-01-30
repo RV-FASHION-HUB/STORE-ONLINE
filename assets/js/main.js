@@ -36,7 +36,6 @@ window.addToWishlist = function() {};
 window.removeFromWishlist = function() {};
 window.toggleWishlist = function() {};
 window.displayWishlist = function() {};
-window.saveBannerSettings = function() {};
 window.saveAboutSettings = function() {};
 window.saveProduct = function() {};
 window.deleteProductAdmin = function() {};
@@ -66,9 +65,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   
   // Update wishlist count
   updateWishlistCount();
-  
-  // Load banner settings
-  loadBannerSettings();
   
   // Load about page settings
   loadAboutSettings();
@@ -2202,42 +2198,6 @@ window.printBill = printBill;
 window.sendWhatsAppUpdate = sendWhatsAppUpdate;
 window.exportOrdersCSV = exportOrdersCSV;
 
-// ========== BANNER MANAGEMENT ==========
-function loadBannerSettings() {
-  const settings = JSON.parse(localStorage.getItem('bannerSettings') || '{"text":"Welcome to R.V Fashion Hub - Premium Luxury Collection","bgColor":"#1a1a1a","textColor":"#ffffff","speed":"10"}');
-  
-  if (settings.text) {
-    document.getElementById('banner').textContent = settings.text;
-  }
-  
-  if (settings.bgColor) {
-    document.getElementById('banner').style.background = settings.bgColor;
-  }
-  
-  if (settings.textColor) {
-    document.getElementById('banner').style.color = settings.textColor;
-  }
-  
-  if (settings.speed) {
-    document.getElementById('banner').style.animationDuration = settings.speed + 's';
-  }
-}
-
-function saveBannerSettings() {
-  const settings = {
-    text: document.getElementById('bannerText').value || 'Welcome to R.V Fashion Hub',
-    bgColor: document.getElementById('bannerColor').value,
-    textColor: document.getElementById('bannerTextColor').value,
-    speed: document.getElementById('bannerSpeed').value
-  };
-  
-  localStorage.setItem('bannerSettings', JSON.stringify(settings));
-  loadBannerSettings();
-  alert('Banner settings saved!');
-}
-
-window.saveBannerSettings = saveBannerSettings;
-
 // ========== ABOUT PAGE MANAGEMENT ==========
 function loadAboutSettings() {
   const settings = JSON.parse(localStorage.getItem('aboutSettings') || '{"image":"","text":"Welcome to R.V Fashion Hub, your destination for luxury clothing and premium fashion accessories. We pride ourselves on offering the finest quality garments with exclusive designs.","vision":"Our vision is to bring premium fashion to everyone.","whatsapp":"","email":"","facebook":"","instagram":"","youtube":""}');
@@ -2314,7 +2274,6 @@ window.removeFromCart = removeFromCart;
 window.quickAddToCart = quickAddToCart;
 window.handleMainSearch = handleMainSearch;
 window.showAdminSection = showAdminSection;
-window.saveBannerSettings = saveBannerSettings;
 window.saveAboutSettings = saveAboutSettings;
 window.saveProduct = saveProduct;
 window.deleteProductAdmin = deleteProductAdmin;

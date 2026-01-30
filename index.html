@@ -9,9 +9,6 @@
 <body>
     <!-- Header -->
     <header>
-        <div class="banner" id="banner">
-            <span>Welcome to R.V Fashion Hub - Premium Luxury Collection</span>
-        </div>
         <div class="header-content">
             <a href="#" class="logo">R.V Fashion Hub</a>
             <div class="search-bar">
@@ -359,7 +356,6 @@
                         <button onclick="showAdminSection('inventory')" class="admin-nav-btn">Inventory</button>
                         <button onclick="showAdminSection('orders')" class="admin-nav-btn">Orders</button>
                         <button onclick="showAdminSection('reviews')" class="admin-nav-btn">Reviews</button>
-                        <button onclick="showAdminSection('banner')" class="admin-nav-btn">Banner</button>
                         <button onclick="showAdminSection('about')" class="admin-nav-btn">About Page</button>
                     </div>
                     <div class="admin-content">
@@ -462,33 +458,6 @@
                                     </thead>
                                     <tbody id="reviewsTableBody"></tbody>
                                 </table>
-                            </div>
-                        </div>
-
-                        <!-- Banner Management -->
-                        <div id="admin-banner" class="admin-section hidden">
-                            <h2 class="admin-title">Customize Banner</h2>
-                            <div style="background: white; padding: 20px; border-radius: 8px;">
-                                <div class="form-group">
-                                    <label>Banner Text</label>
-                                    <input type="text" id="bannerText" placeholder="Enter banner text">
-                                </div>
-                                <div class="form-group">
-                                    <label>Background Color</label>
-                                    <input type="color" id="bannerColor" value="#1a1a1a">
-                                </div>
-                                <div class="form-group">
-                                    <label>Text Color</label>
-                                    <input type="color" id="bannerTextColor" value="#ffffff">
-                                </div>
-                                <div class="form-group">
-                                    <label>Animation Speed (seconds)</label>
-                                    <input type="number" id="bannerSpeed" value="10" min="1" max="60">
-                                </div>
-                                <button class="btn btn-primary" onclick="saveBannerSettings()">Save Banner Settings</button>
-                                <div id="bannerPreview" class="banner" style="margin-top: 20px;">
-                                    <span>Preview Banner</span>
-                                </div>
                             </div>
                         </div>
 

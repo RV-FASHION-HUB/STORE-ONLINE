@@ -13,6 +13,11 @@
   --warning: #f39c12;
 }
 
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -24,6 +29,8 @@ body {
   color: var(--text-dark);
   background-color: var(--accent-color);
   line-height: 1.6;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Header & Navigation */
@@ -35,22 +42,6 @@ header {
   top: 0;
   z-index: 1000;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.banner {
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  color: var(--accent-color);
-  padding: 12px 0;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: 1px;
-  animation: bannerScroll 10s linear infinite;
-}
-
-@keyframes bannerScroll {
-  0% { transform: translateX(100%); }
-  100% { transform: translateX(-100%); }
 }
 
 .header-content {
@@ -91,6 +82,19 @@ header {
 .search-bar input:focus {
   outline: none;
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* Main Content Area */
+main {
+  width: 100%;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+/* Page Container */
+.page-container {
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .header-actions {
@@ -210,6 +214,8 @@ header {
   max-width: 1400px;
   margin: 0 auto;
   padding: 0 40px;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .section-title {
@@ -601,7 +607,7 @@ header {
   border-radius: 8px;
   padding: 30px;
   max-width: 90vw;
-  width: 1200px;
+  width: 100%;
   max-height: 95vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -1236,13 +1242,6 @@ table tbody tr:last-child td {
     justify-content: center;
   }
 
-  /* Banner Optimization */
-  .banner {
-    padding: 8px 0;
-    font-size: 12px;
-    letter-spacing: 0.5px;
-  }
-
   /* Category Navigation */
   .category-nav {
     overflow-x: auto;
@@ -1574,11 +1573,11 @@ table tbody tr:last-child td {
   }
 
   .container {
-    padding: 0 15px;
+    padding: 0 12px;
   }
 
   table {
-    font-size: 12px;
+    font-size: 13px;
     overflow-x: auto;
     display: block;
   }
@@ -1697,146 +1696,202 @@ table tbody tr:last-child td {
 /* Extra small devices (below 480px) */
 @media (max-width: 480px) {
   html {
-    font-size: 13px;
+    font-size: 14px;
   }
 
   /* Header for Small Devices */
   .header-content {
-    padding: 8px 10px;
-    gap: 8px;
+    padding: 10px 12px;
+    gap: 10px;
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .logo {
-    font-size: 16px;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 8px;
   }
 
   .search-bar {
     order: 3;
     width: 100%;
     max-width: 100%;
+    margin: 0;
   }
 
   .search-bar input {
     font-size: 16px;
-    padding: 10px;
+    padding: 12px;
+    width: 100%;
   }
 
   .header-actions {
-    gap: 6px;
+    gap: 8px;
+    justify-content: center;
   }
 
   .header-actions a,
   .header-actions div {
-    min-width: 60px;
-    font-size: 11px;
-    padding: 6px 4px;
+    min-width: auto;
+    font-size: 12px;
+    padding: 8px 6px;
   }
 
   .cart-icon {
     position: relative;
   }
 
-  /* Banner */
-  .banner {
-    padding: 6px 0;
-    font-size: 11px;
-  }
-
   /* Category Navigation */
   .category-nav .container {
-    padding: 8px 8px !important;
+    padding: 10px 10px !important;
     gap: 8px !important;
   }
 
   .category-nav a {
-    padding: 6px 10px !important;
-    font-size: 11px !important;
-    min-height: 36px;
+    padding: 8px 12px !important;
+    font-size: 12px !important;
+    min-height: 40px;
   }
 
   /* Section Titles */
   .section-title {
-    font-size: 20px;
-    margin: 15px 10px;
+    font-size: 22px;
+    margin: 20px 12px;
+    font-weight: 700;
   }
 
-  /* Products Grid for Small Screens - Horizontal Scroll */
-  .products-grid {
-    display: flex;
-    flex-direction: row;
-    gap: 8px;
-    padding: 8px;
+  /* Filter Strip - Better Mobile Layout */
+  .filter-strip {
+    margin: 15px 10px;
+    padding: 12px;
+    gap: 10px;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
+  }
+
+  .filter-strip-content {
+    gap: 10px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+
+  .filter-item {
+    min-width: auto;
+    flex: 1;
+    min-width: 100px;
+  }
+
+  .filter-input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .filter-dropdown-btn {
+    padding: 10px 12px;
+    font-size: 13px;
+    min-height: 40px;
+    white-space: nowrap;
+    width: 100%;
+  }
+
+  /* Products Grid for Small Screens - Better Spacing */
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+    overflow-x: hidden;
+    margin: 15px 0;
+    width: 100%;
   }
 
   .products-grid .product-card {
-    flex: 0 0 110px;
-    min-width: 110px;
-    scroll-snap-align: start;
+    flex: none;
+    min-width: auto;
+    scroll-snap-align: none;
+    padding: 12px;
+    border-radius: 10px;
   }
 
   .product-image {
-    height: 100px;
+    height: 140px;
+    border-radius: 8px;
+    margin-bottom: 8px;
   }
 
   .product-card {
-    padding: 6px;
+    padding: 12px;
   }
 
   .product-name {
-    font-size: 11px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    line-height: 1.3;
   }
 
   .product-brand {
-    font-size: 10px;
+    font-size: 11px;
+    margin-bottom: 4px;
+    color: var(--text-light);
   }
 
   .product-rating {
-    font-size: 10px;
+    font-size: 11px;
+    margin-bottom: 8px;
   }
 
   .discount-badge {
-    font-size: 9px;
-    padding: 3px;
-    top: 5px;
-    left: 5px;
+    font-size: 10px;
+    padding: 4px 6px;
+    top: 8px;
+    left: 8px;
   }
 
   .price-badge {
-    font-size: 10px;
-    bottom: 5px;
+    font-size: 11px;
+    padding: 4px 8px;
+    bottom: 8px;
   }
 
   .product-prices {
-    margin: 4px 0;
+    margin: 8px 0;
+    display: flex;
+    gap: 8px;
+    align-items: center;
   }
 
   .product-stock {
-    font-size: 10px;
+    font-size: 11px;
+    margin: 6px 0;
   }
 
   .product-actions {
-    gap: 4px;
+    gap: 6px;
     flex-direction: column;
+    margin-top: 8px;
   }
 
   .product-actions .btn {
-    font-size: 10px;
-    padding: 4px 6px;
-    min-height: 32px;
+    font-size: 12px;
+    padding: 8px 10px;
+    min-height: 40px;
+    width: 100%;
   }
 
   /* Cart Optimization */
   .cart-item {
-    padding: 8px;
+    padding: 12px;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    border-radius: 8px;
   }
 
   .cart-item-image {
-    height: 80px;
+    height: 120px;
+    border-radius: 6px;
   }
 
   .cart-item-details {
@@ -1845,38 +1900,40 @@ table tbody tr:last-child td {
 
   .size-info,
   .price-info {
-    font-size: 12px;
+    font-size: 13px;
+    margin: 4px 0;
   }
 
   .quantity-controls {
-    min-height: 32px;
+    min-height: 40px;
   }
 
   .btn-group {
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
   }
 
   .btn {
     width: 100%;
-    font-size: 12px;
-    padding: 10px 12px;
-    min-height: 40px;
+    font-size: 13px;
+    padding: 12px 14px;
+    min-height: 44px;
+    border-radius: 6px;
   }
 
   /* Wishlist */
   .wishlist-grid {
-    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 
   /* Forms */
   .form-group {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
   }
 
   .form-group label {
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .form-group input,
