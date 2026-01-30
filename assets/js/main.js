@@ -110,6 +110,8 @@ function showPage(pageName) {
       displayCart();
     } else if (pageName === 'wishlist') {
       displayWishlist();
+    } else if (pageName === 'account') {
+      displayAccountPage();
     } else if (pageName === 'checkout') {
       displayCheckout();
     } else if (pageName === 'myorders') {

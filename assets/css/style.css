@@ -346,20 +346,41 @@ main {
 
 .product-card {
   background-color: var(--accent-color);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
 .product-card:hover {
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
   border-color: var(--secondary-color);
+  transform: translateY(-3px);
+}
 }
 
 .product-image {
   position: relative;
+  width: 100%;
+  height: 200px;
+  background-color: #f9f9f9;
+  overflow: hidden;
+}
+
+.product-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-image img {
+  transform: scale(1.05);
+}
   width: 100%;
   height: 300px;
   overflow: hidden;
@@ -418,6 +439,12 @@ main {
 }
 
 .product-info {
+  padding: 14px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
   padding: 20px;
 }
 
@@ -1170,8 +1197,10 @@ table tbody tr:last-child td {
   border-bottom: none;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
   .header-content {
     padding: 12px 15px;
     max-width: 100%;
@@ -1187,7 +1216,10 @@ table tbody tr:last-child td {
   }
 }
 
-@media (max-width: 768px) {
+/* Utility Classes */
+.hidden {
+  display: none !important;
+}
   /* Mobile-First Typography */
   html {
     font-size: 14px;
@@ -1466,11 +1498,21 @@ table tbody tr:last-child td {
   /* User Menu */
   .user-dropdown {
     position: fixed;
-    top: 60px;
+    top: 70px;
     right: 10px;
-    width: 90%;
+    width: 85%;
     max-width: 280px;
-    z-index: 2000;
+    z-index: 3500;
+    background-color: var(--primary-color);
+    border: 1px solid var(--secondary-color);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+
+  .user-dropdown.active {
+    display: block;
   }
 
   .product-detail-modal {
@@ -1480,75 +1522,12 @@ table tbody tr:last-child td {
     overflow-y: auto;
   }
 
-  /* Mobile App-Like Bottom Navigation */
-  .mobile-bottom-nav {
-    display: none;
-    position: fixed;
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 30px);
-    max-width: 720px;
-    height: 62px;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    z-index: 2000;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    padding: 6px 10px;
-    gap: 6px;
-  }
-
-  .mobile-bottom-nav .nav-btn {
-    background: transparent;
-    border: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-dark);
-    font-size: 12px;
-    flex: 1;
-    gap: 4px;
-  }
-
-  .mobile-bottom-nav .nav-icon {
-    font-size: 18px;
-    position: relative;
-  }
-
-  .nav-badge {
-    position: absolute;
-    top: -6px;
-    right: -10px;
-    background: var(--secondary-color);
-    color: white;
-    font-size: 11px;
-    padding: 2px 6px;
-    border-radius: 12px;
-    min-width: 18px;
-    text-align: center;
-  }
-
-  /* Show bottom nav and hide header actions to reduce clutter */
-  .mobile-bottom-nav {
-    display: flex;
-  }
-
-  .header-actions {
+  /* Utility Classes */
+  .hidden {
     display: none !important;
   }
 
-  /* Ensure content not hidden behind nav */
-  .page-container {
-    padding-bottom: 80px;
-  }
-
 }
-
-@media (max-width: 768px) {
   /* Show bottom nav on small tablets and phones as well */
   .mobile-bottom-nav {
     display: flex !important;
@@ -1648,10 +1627,13 @@ table tbody tr:last-child td {
 
   .user-dropdown {
     position: fixed;
-    top: 60px;
+    top: 70px;
     right: 10px;
-    width: 90%;
-    max-width: 300px;
+    width: 85%;
+    max-width: 280px;
+    z-index: 3500;
+    max-height: 50vh;
+    overflow-y: auto;
   }
 
   /* Mobile Filter Drawer Styles */
