@@ -6,10 +6,10 @@ service cloud.firestore {
     match /products/{productId} {
       allow read: if true;
       // TEMPORARY (DEV): allow authenticated users to update stock for order fulfillment. Restrict to admins in production.
-      allow create, update: if request.auth != null && (request.auth.uid == 'dev-mode' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true);
+      allow create, update: if request.auth != null && (request.auth.uid == 'dev-mode' || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true);
       // Allow authenticated users to update only rating and ratingCount fields (for reviews)
       allow update: if request.auth != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rating', 'ratingCount']);
-      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
     }
 
     // Orders
@@ -21,9 +21,9 @@ service cloud.firestore {
       // Allow customers to update their own orders (payment info); admins can update any order
       allow update: if request.auth != null && (
         request.auth.uid == resource.data.customerId ||
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true
       );
-      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
     }
 
     // Reviews
@@ -32,15 +32,15 @@ service cloud.firestore {
       allow read: if true;
       allow update, delete: if request.auth != null && (
         request.auth.uid == resource.data.customerId ||
-        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.exists && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true)
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true
       );
     }
 
     // Users - allow users to manage their own document; admins can read/write
-      match /users/{userId} {
+    match /users/{userId} {
       allow create: if request.auth != null && request.auth.uid == userId;
-      allow read: if request.auth != null && (request.auth.uid == userId || (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.exists && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true));
-      allow write: if request.auth != null && (request.auth.uid == userId || (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.exists && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true));
+      allow read: if request.auth != null && (request.auth.uid == userId || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true);
+      allow write: if request.auth != null && (request.auth.uid == userId || get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true);
 
       match /addresses/{addressId} {
         allow read, write: if request.auth != null && request.auth.uid == userId;
@@ -53,12 +53,12 @@ service cloud.firestore {
     // Banners and settings - admin only (via users doc)
     match /banners/{doc=**} {
       allow read: if true;
-      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
     }
 
     match /settings/{doc=**} {
       allow read: if true;
-      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true;
+      allow write: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
     }
 
     // Fallback: deny everything else by default
