@@ -1879,7 +1879,7 @@ async function loadReviewsAdmin() {
           <td>${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</td>
           <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${review.reviewText || '(No text)'}</td>
           <td>
-            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; color: var(--danger); border-color: var(--danger);" data-review-id="${review.id}" class="delete-review-btn">Delete</button>
+            <button class="btn btn-outline delete-review-btn" style="padding: 6px 12px; font-size: 12px; color: var(--danger); border-color: var(--danger);" data-review-id="${review.id}">Delete</button>
           </td>
         </tr>
       `;
@@ -1950,6 +1950,14 @@ async function editProductAdmin(productId) {
     if (document.getElementById('productBarcode')) document.getElementById('productBarcode').value = product.barcode;
     if (document.getElementById('productImage')) document.getElementById('productImage').value = product.imageUrl;
     if (document.getElementById('productDescription')) document.getElementById('productDescription').value = product.description || '';
+    
+    // Populate additional images (all images except the first one)
+    if (document.getElementById('productImages')) {
+      const additionalImages = product.images && Array.isArray(product.images) 
+        ? product.images.slice(1) // Exclude first image (main image)
+        : [];
+      document.getElementById('productImages').value = additionalImages.join('\n');
+    }
     
     // Populate sizes
     const sizesContainer = document.getElementById('sizesContainer');
