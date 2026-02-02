@@ -292,13 +292,14 @@ async function displayProducts(products) {
     
     const card = document.createElement('div');
     card.className = 'product-card';
+    card.setAttribute('data-product-id', product.id);
     card.innerHTML = `
       <div class="product-image" style="position: relative;">
         <img src="${primaryImage}" alt="${product.name}" onclick="showProductDetail('${product.id}')" loading="lazy">
         ${isOutOfStock ? '<div class="sold-out-badge">SOLD OUT</div>' : ''}
         <div class="discount-badge">-${discount}%</div>
         <div class="price-badge">₹${minPrice}</div>
-        <div style="position: absolute; bottom: 10px; right: 10px; cursor: pointer; font-size: 26px; color: #FF0000; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
+        <div class="wishlist-heart" style="position: absolute; bottom: 10px; right: 10px; cursor: pointer; font-size: 26px; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
       </div>
       <div class="product-info">
         <div class="product-brand">${product.brand}</div>
@@ -325,6 +326,8 @@ async function displayProducts(products) {
     `;
     grid.appendChild(card);
   });
+  // Update heart icons according to wishlist state
+  updateWishlistIcons();
 }
 
 async function showProductDetail(productId) {
@@ -388,10 +391,10 @@ async function showProductDetail(productId) {
   content.innerHTML = `
     <div class="product-detail-modal">
       <div>
-        <div class="product-detail-image" style="position: relative;">
+        <div class="product-detail-image" style="position: relative;" data-product-id="${product.id}">
           <img id="mainProductImage" src="${primaryImage}" alt="${product.name}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px;">
           ${isOutOfStock ? '<div class="sold-out-badge">SOLD OUT</div>' : ''}
-          <div style="position: absolute; bottom: 10px; right: 10px; cursor: pointer; font-size: 28px; color: #FF0000; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
+          <div class="wishlist-heart" data-product-id="${product.id}" style="position: absolute; bottom: 10px; right: 10px; cursor: pointer; font-size: 28px; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
         </div>
         ${images.length > 1 ? `
           <div style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto;">
@@ -470,6 +473,8 @@ async function showProductDetail(productId) {
       </div>
     </div>
   `;
+  // Ensure wishlist icon state is correct when modal opens
+  updateWishlistIcons();
   
   modal.classList.add('active');
   document.body.classList.add('modal-open');
