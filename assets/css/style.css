@@ -1341,4 +1341,51 @@ table tbody tr:last-child td {
     font-size: 9px;
     text-align: right;
   }
+
+  /* Mobile Header Optimization */
+  .header-content {
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 8px;
+  }
+
+  .logo {
+    font-size: clamp(16px, 4vw, 22px);
+    width: 100%;
+    text-align: center;
+  }
+
+  .search-bar {
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+    margin: 0;
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .header-actions {
+    gap: 8px;
+    flex: 1;
+    justify-content: center;
+    width: 100%;
+    order: 4;
+  }
+
+  .header-actions a, .header-actions button {
+    font-size: 12px;
+    padding: 6px 10px;
+  }
+
+  .cart-icon {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  .cart-count {
+    width: 18px;
+    height: 18px;
+    font-size: 10px;
+  }
 }
