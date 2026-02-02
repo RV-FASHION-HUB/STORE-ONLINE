@@ -1879,11 +1879,19 @@ async function loadReviewsAdmin() {
           <td>${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</td>
           <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${review.reviewText || '(No text)'}</td>
           <td>
-            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; color: var(--danger); border-color: var(--danger);" onclick="deleteReviewAdmin('${review.id}')">Delete</button>
+            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; color: var(--danger); border-color: var(--danger);" data-review-id="${review.id}" class="delete-review-btn">Delete</button>
           </td>
         </tr>
       `;
     }).join('');
+    
+    // Attach event listeners to delete buttons
+    document.querySelectorAll('.delete-review-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const reviewId = this.getAttribute('data-review-id');
+        deleteReviewAdmin(reviewId);
+      });
+    });
   } catch (error) {
     console.error('Error loading reviews:', error);
     document.getElementById('reviewsTableBody').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: red;">Error loading reviews</td></tr>';
