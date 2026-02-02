@@ -418,26 +418,77 @@
                             </div>
                         </div>
 
-                        <!-- Orders Management -->
-                        <div id="admin-orders" class="admin-section hidden">
-                            <h2 class="admin-title">Orders</h2>
-                            <button class="btn btn-outline" style="margin-bottom: 20px;" onclick="exportOrdersCSV()">📥 Download CSV</button>
-                            <div class="table-responsive">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Order ID</th>
-                                            <th>Customer</th>
-                                            <th>Phone</th>
-                                            <th>Total</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="ordersTableBody"></tbody>
-                                </table>
-                            </div>
-                        </div>
+                                                <!-- Orders Management -->
+                                                <div id="admin-orders" class="admin-section hidden">
+                                                        <h2 class="admin-title">Orders</h2>
+                                                        <div style="display:flex; gap:12px; align-items:center; margin-bottom:16px; flex-wrap:wrap;">
+                                                            <div style="display:flex; gap:8px;">
+                                                                <button id="activeOrdersBtn" class="btn btn-outline" onclick="showOrdersTab('active')">Active Orders</button>
+                                                                <button id="deliveredOrdersBtn" class="btn btn-outline" onclick="showOrdersTab('delivered')">Delivered</button>
+                                                                <button id="cancelledOrdersBtn" class="btn btn-outline" onclick="showOrdersTab('cancelled')">Cancelled</button>
+                                                            </div>
+                                                            <div style="margin-left:auto;">
+                                                                <button class="btn btn-outline" onclick="exportOrdersCSV()">📥 Download CSV</button>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="ordersTab_active">
+                                                            <h3 style="margin: 8px 0 14px; font-size:16px; color:var(--text-dark);">Active orders waiting for processing</h3>
+                                                            <div class="table-responsive">
+                                                                <table>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Order ID</th>
+                                                                            <th>Customer</th>
+                                                                            <th>Phone</th>
+                                                                            <th>Total</th>
+                                                                            <th>Status</th>
+                                                                            <th>Actions</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="activeOrdersTableBody"></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="ordersTab_delivered" class="hidden">
+                                                            <h3 style="margin: 8px 0 14px; font-size:16px; color:var(--text-dark);">Delivered orders (archived)</h3>
+                                                            <div class="table-responsive">
+                                                                <table>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Order ID</th>
+                                                                            <th>Customer</th>
+                                                                            <th>Phone</th>
+                                                                            <th>Total</th>
+                                                                            <th>Delivered At</th>
+                                                                            <th>Actions</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="deliveredOrdersTableBody"></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+
+                                                        <div id="ordersTab_cancelled" class="hidden">
+                                                            <h3 style="margin: 8px 0 14px; font-size:16px; color:var(--text-dark);">Cancelled orders</h3>
+                                                            <div class="table-responsive">
+                                                                <table>
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Order ID</th>
+                                                                            <th>Customer</th>
+                                                                            <th>Phone</th>
+                                                                            <th>Total</th>
+                                                                            <th>Cancelled At</th>
+                                                                            <th>Actions</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody id="cancelledOrdersTableBody"></tbody>
+                                                                </table>
+                                                            </div>
+                                                        </div>
+                                                </div>
 
                         <!-- Reviews Management -->
                         <div id="admin-reviews" class="admin-section hidden">
@@ -609,6 +660,7 @@
       window.loadDashboard = () => {};
       window.loadInventory = () => {};
       window.loadOrdersAdmin = () => {};
+            window.showOrdersTab = () => {};
         </script>
 
         <script type="module" src="assets/js/main.js"></script>

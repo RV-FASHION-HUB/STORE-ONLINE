@@ -1170,6 +1170,31 @@ main {
   margin-bottom: 30px;
 }
 
+/* Orders tab buttons */
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-dark);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-outline.active {
+  background: var(--secondary-color);
+  color: var(--accent-color);
+  border-color: transparent;
+}
+
+/* Visually separate delivered rows */
+table tbody tr.delivered {
+  background: linear-gradient(90deg, rgba(239,246,233,0.8), rgba(255,255,255,0.8));
+}
+
+table tbody tr.cancelled {
+  background: linear-gradient(90deg, rgba(255,240,240,0.9), rgba(255,255,255,0.9));
+}
+
 /* Tables */
 .table-responsive {
   overflow-x: auto;

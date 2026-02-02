@@ -1625,6 +1625,8 @@ function showAdminSection(sectionName) {
     loadInventory();
   } else if (sectionName === 'orders') {
     loadOrdersAdmin();
+    // Ensure orders tab defaults to active
+    try { showOrdersTab('active'); } catch (e) { /* ignore if function missing */ }
   } else if (sectionName === 'reviews') {
     loadReviewsAdmin();
   }
@@ -1714,42 +1716,137 @@ async function loadInventory() {
 async function loadOrdersAdmin() {
   try {
     const result = await OrderManager.getAllOrders();
-    const tbody = document.getElementById('ordersTableBody');
-    
-    if (!result.success || !result.orders || result.orders.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No orders found</td></tr>';
+    const activeTbody = document.getElementById('activeOrdersTableBody');
+    const deliveredTbody = document.getElementById('deliveredOrdersTableBody');
+    const cancelledTbody = document.getElementById('cancelledOrdersTableBody');
+
+    if (!result.success || !result.orders) {
+      activeTbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No orders found</td></tr>';
+      deliveredTbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No delivered orders</td></tr>';
       return;
     }
-    
-    tbody.innerHTML = result.orders.map(order => {
-      const orderId = order.id || order.orderId;
-      return `
-        <tr>
-          <td>${orderId}</td>
-          <td>${order.customerName || 'N/A'}</td>
-          <td>${order.phoneNumber || 'N/A'}</td>
-          <td>₹${order.total || 0}</td>
-          <td>
-            <select onchange="updateOrderStatusAdmin('${orderId}', this.value)" style="padding: 6px; border: 1px solid var(--border-color); border-radius: 4px;">
-                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-              </select>
-          </td>
-          <td>
-            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="printBill('${orderId}')">Print</button>
-            <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; margin-left: 5px;" onclick="sendWhatsAppUpdate('${orderId}')">WhatsApp</button>
-          </td>
-        </tr>
-      `;
-    }).join('');
+
+    const cancelledOrders = result.orders.filter(o => o.status === 'cancelled');
+    const deliveredOrders = result.orders.filter(o => o.status === 'delivered');
+    const activeOrders = result.orders.filter(o => o.status !== 'delivered' && o.status !== 'cancelled');
+
+    if (activeOrders.length === 0) {
+      activeTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:16px;">No active orders</td></tr>';
+    } else {
+      activeTbody.innerHTML = activeOrders.map(order => {
+        const orderId = order.id || order.orderId;
+        return `
+          <tr>
+            <td>${orderId}</td>
+            <td>${order.customerName || 'N/A'}</td>
+            <td>${order.phoneNumber || 'N/A'}</td>
+            <td>₹${order.total || 0}</td>
+            <td>
+              <select onchange="updateOrderStatusAdmin('${orderId}', this.value)" style="padding: 6px; border: 1px solid var(--border-color); border-radius: 4px;">
+                  <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                  <option value="confirmed" ${order.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                  <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                  <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                  <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                </select>
+            </td>
+            <td>
+              <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="printBill('${orderId}')">Print</button>
+              <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; margin-left: 5px;" onclick="sendWhatsAppUpdate('${orderId}')">WhatsApp</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    if (deliveredOrders.length === 0) {
+      deliveredTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:16px;">No delivered orders</td></tr>';
+    } else {
+      deliveredTbody.innerHTML = deliveredOrders.map(order => {
+        const orderId = order.id || order.orderId;
+        const deliveredAt = order.updatedAt ? new Date(order.updatedAt).toLocaleString() : '-';
+        return `
+          <tr class="delivered">
+            <td>${orderId}</td>
+            <td>${order.customerName || 'N/A'}</td>
+            <td>${order.phoneNumber || 'N/A'}</td>
+            <td>₹${order.total || 0}</td>
+            <td>${deliveredAt}</td>
+            <td>
+              <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="printBill('${orderId}')">Print</button>
+              <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; margin-left: 5px;" onclick="sendWhatsAppUpdate('${orderId}')">WhatsApp</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Cancelled orders
+    if (cancelledOrders.length === 0) {
+      if (cancelledTbody) cancelledTbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:16px;">No cancelled orders</td></tr>';
+    } else {
+      if (cancelledTbody) cancelledTbody.innerHTML = cancelledOrders.map(order => {
+        const orderId = order.id || order.orderId;
+        const cancelledAt = order.updatedAt ? new Date(order.updatedAt).toLocaleString() : '-';
+        return `
+          <tr class="cancelled">
+            <td>${orderId}</td>
+            <td>${order.customerName || 'N/A'}</td>
+            <td>${order.phoneNumber || 'N/A'}</td>
+            <td>₹${order.total || 0}</td>
+            <td>${cancelledAt}</td>
+            <td>
+              <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px;" onclick="printBill('${orderId}')">Print</button>
+              <button class="btn btn-outline" style="padding: 6px 12px; font-size: 12px; margin-left: 5px;" onclick="sendWhatsAppUpdate('${orderId}')">WhatsApp</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
   } catch (error) {
     console.error('Error loading orders:', error);
-    document.getElementById('ordersTableBody').innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">Error loading orders</td></tr>';
+    document.getElementById('activeOrdersTableBody').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: red;">Error loading orders</td></tr>';
+    document.getElementById('deliveredOrdersTableBody').innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px; color: red;">Error loading orders</td></tr>';
   }
 }
+
+// Toggle orders tabs (active / delivered / cancelled)
+function showOrdersTab(tab) {
+  const activeSection = document.getElementById('ordersTab_active');
+  const deliveredSection = document.getElementById('ordersTab_delivered');
+  const cancelledSection = document.getElementById('ordersTab_cancelled');
+  const activeBtn = document.getElementById('activeOrdersBtn');
+  const deliveredBtn = document.getElementById('deliveredOrdersBtn');
+  const cancelledBtn = document.getElementById('cancelledOrdersBtn');
+
+  if (tab === 'delivered') {
+    if (activeSection) activeSection.classList.add('hidden');
+    if (deliveredSection) deliveredSection.classList.remove('hidden');
+    if (cancelledSection) cancelledSection.classList.add('hidden');
+    if (activeBtn) activeBtn.classList.remove('active');
+    if (deliveredBtn) deliveredBtn.classList.add('active');
+    if (cancelledBtn) cancelledBtn.classList.remove('active');
+
+  } else if (tab === 'cancelled') {
+    if (activeSection) activeSection.classList.add('hidden');
+    if (deliveredSection) deliveredSection.classList.add('hidden');
+    if (cancelledSection) cancelledSection.classList.remove('hidden');
+    if (activeBtn) activeBtn.classList.remove('active');
+    if (deliveredBtn) deliveredBtn.classList.remove('active');
+    if (cancelledBtn) cancelledBtn.classList.add('active');
+
+  } else { // default to active
+    if (deliveredSection) deliveredSection.classList.add('hidden');
+    if (cancelledSection) cancelledSection.classList.add('hidden');
+    if (activeSection) activeSection.classList.remove('hidden');
+    if (deliveredBtn) deliveredBtn.classList.remove('active');
+    if (cancelledBtn) cancelledBtn.classList.remove('active');
+    if (activeBtn) activeBtn.classList.add('active');
+  }
+}
+
+// Expose to global so inline onclick handlers work before/after module load
+window.showOrdersTab = showOrdersTab;
 
 async function loadReviewsAdmin() {
   try {
@@ -1798,7 +1895,9 @@ async function deleteReviewAdmin(reviewId) {
     const result = await ProductManager.deleteReview(reviewId);
     if (result.success) {
       alert('Review deleted successfully!');
-      loadReviewsAdmin();
+      await loadReviewsAdmin();
+      // Refresh products so UI shows updated rating and counts
+      await loadProducts();
     } else {
       alert('Error deleting review: ' + result.error);
     }

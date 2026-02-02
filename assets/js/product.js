@@ -190,7 +190,45 @@ export class ProductManager {
   // Delete a review
   static async deleteReview(reviewId) {
     try {
-      await deleteDoc(doc(db, 'reviews', reviewId));
+      // Read the review first to obtain productId and rating
+      const reviewRef = doc(db, 'reviews', reviewId);
+      const reviewSnap = await getDoc(reviewRef);
+      if (!reviewSnap.exists()) {
+        return { success: false, error: 'Review not found' };
+      }
+
+      const review = reviewSnap.data();
+      const productId = review.productId;
+      const ratingValue = typeof review.rating === 'number' ? review.rating : parseFloat(review.rating) || 0;
+
+      // Delete the review document
+      await deleteDoc(reviewRef);
+
+      // Update product's aggregated rating and count
+      if (productId) {
+        const productRef = doc(db, 'products', productId);
+        const productSnap = await getDoc(productRef);
+        if (productSnap.exists()) {
+          const product = productSnap.data();
+          const oldCount = typeof product.ratingCount === 'number' ? product.ratingCount : (parseInt(product.ratingCount) || 0);
+          const oldRating = typeof product.rating === 'number' ? product.rating : (parseFloat(product.rating) || 0);
+
+          const newCount = Math.max(0, oldCount - 1);
+          let newRating = 0;
+          if (newCount === 0) {
+            newRating = 0;
+          } else {
+            const totalRating = (oldRating * oldCount) - ratingValue;
+            newRating = totalRating / newCount;
+          }
+
+          await updateDoc(productRef, {
+            rating: newRating,
+            ratingCount: newCount
+          });
+        }
+      }
+
       return { success: true };
     } catch (error) {
       console.error('Error deleting review:', error);
