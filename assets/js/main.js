@@ -298,7 +298,7 @@ async function displayProducts(products) {
         ${isOutOfStock ? '<div class="sold-out-badge">SOLD OUT</div>' : ''}
         <div class="discount-badge">-${discount}%</div>
         <div class="price-badge">₹${minPrice}</div>
-        <div style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 26px; color: #FFD700; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
+        <div style="position: absolute; bottom: 10px; right: 10px; cursor: pointer; font-size: 26px; color: #FF0000; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
       </div>
       <div class="product-info">
         <div class="product-brand">${product.brand}</div>
@@ -391,7 +391,7 @@ async function showProductDetail(productId) {
         <div class="product-detail-image" style="position: relative;">
           <img id="mainProductImage" src="${primaryImage}" alt="${product.name}" style="width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px;">
           ${isOutOfStock ? '<div class="sold-out-badge">SOLD OUT</div>' : ''}
-          <div style="position: absolute; top: 10px; right: 10px; cursor: pointer; font-size: 28px; color: #FFD700; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
+          <div style="position: absolute; bottom: 10px; right: 10px; cursor: pointer; font-size: 28px; color: #FF0000; font-weight: bold; text-shadow: 0 0 2px rgba(0,0,0,0.3);" onclick="toggleWishlist('${product.id}')" title="Add to Wishlist">♡</div>
         </div>
         ${images.length > 1 ? `
           <div style="display: flex; gap: 8px; margin-top: 10px; overflow-x: auto;">
