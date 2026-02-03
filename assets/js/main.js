@@ -596,12 +596,14 @@ async function loadFilters() {
   
   // Load brands
   const brandFilter = document.getElementById('brandFilter');
-  brandFilter.innerHTML = brands.map(brand => `
-    <label class="filter-option">
-      <input type="checkbox" value="${brand}" onchange="applyFilters()">
-      <span>${brand}</span>
-    </label>
-  `).join('');
+  if (brandFilter) {
+    brandFilter.innerHTML = brands.map(brand => `
+      <label class="filter-option">
+        <input type="checkbox" value="${brand}" onchange="applyFilters()">
+        <span>${brand}</span>
+      </label>
+    `).join('');
+  }
 }
 
 async function loadShopPageReviews() {
@@ -662,6 +664,8 @@ function filterByCategory(category) {
   displayProducts(filtered);
 }
 
+// (no subcategory filter function)
+
 async function applyFilters() {
   // Debounce: prevent excessive filtering (max 1 filter per 300ms)
   const now = Date.now();
@@ -683,6 +687,7 @@ async function applyFilters() {
   if (selectedBrands.length > 0) {
     filtered = filtered.filter(p => selectedBrands.includes(p.brand));
   }
+  
   
   filtered = filtered.filter(p => {
     const minProductPrice = Math.min(...p.sizes.map(s => s.sellingPrice));
@@ -714,6 +719,181 @@ function resetFilters() {
   // Close filter drawer on mobile after resetting filters
   closeFilterDrawer();
 }
+
+// ========== CSV Export/Import ==========
+function escapeCsv(value) {
+  if (value === null || value === undefined) return '""';
+  const str = String(value);
+  return '"' + str.replace(/"/g, '""') + '"';
+}
+
+function downloadProductsCSV() {
+  try {
+    const rows = [];
+    const headers = ['productId','name','brand','category','barcode','imageUrl','images','description','sizes','totalStock'];
+    rows.push(headers.join(','));
+
+    // Use allProducts (already loaded)
+    allProducts.forEach(p => {
+      const imagesField = Array.isArray(p.images) ? p.images.join('|') : (p.imageUrl || '');
+      const sizesField = p.sizes ? JSON.stringify(p.sizes) : '';
+      const row = [
+        escapeCsv(p.id || ''),
+        escapeCsv(p.name || ''),
+        escapeCsv(p.brand || ''),
+        escapeCsv(p.category || ''),
+        escapeCsv(p.barcode || ''),
+        escapeCsv(p.imageUrl || ''),
+        escapeCsv(imagesField),
+        escapeCsv(p.description || ''),
+        escapeCsv(sizesField),
+        escapeCsv(p.totalStock || '')
+      ].join(',');
+      rows.push(row);
+    });
+
+    const csvContent = rows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'products_export.csv';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    console.error('Error exporting CSV:', err);
+    alert('Failed to export CSV: ' + err.message);
+  }
+}
+
+function downloadProductsTemplate() {
+  const headers = ['name','brand','category','barcode','imageUrl','images','description','sizes','totalStock'];
+  // sizes: JSON array example -> [{"size":"S","mrp":1000,"sellingPrice":800,"stock":10}]
+  const exampleSizes = '[{"size":"S","mrp":1000,"sellingPrice":800,"stock":10}]';
+  const sampleRow = [
+    'Sample Product',
+    'SampleBrand',
+    'SampleCategory',
+    'SAMPLE123',
+    'https://example.com/image.jpg',
+    'https://example.com/image.jpg|https://example.com/2.jpg',
+    'Short description',
+    exampleSizes,
+    '10'
+  ];
+  const csv = headers.join(',') + '\n' + sampleRow.map(escapeCsv).join(',');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'products_template.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+function parseCSVLine(line) {
+  const result = [];
+  let cur = '';
+  let inQuotes = false;
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i];
+    if (ch === '"') {
+      if (inQuotes && line[i+1] === '"') { cur += '"'; i++; }
+      else { inQuotes = !inQuotes; }
+    } else if (ch === ',' && !inQuotes) {
+      result.push(cur);
+      cur = '';
+    } else {
+      cur += ch;
+    }
+  }
+  result.push(cur);
+  return result.map(s => s.replace(/^"|"$/g, '').trim());
+}
+
+function parseSizesField(s) {
+  if (!s) return [];
+  s = s.trim();
+  if (!s) return [];
+  try {
+    if (s.startsWith('[') || s.startsWith('{')) {
+      return JSON.parse(s);
+    }
+  } catch (e) {
+    // fallthrough
+  }
+  // fallback format: S:mrp:price:stock;M:mrp:price:stock
+  const parts = s.split(/;|\|/).map(p => p.trim()).filter(Boolean);
+  const sizes = parts.map(p => {
+    const seg = p.split(':').map(x => x.trim());
+    return {
+      size: seg[0] || '',
+      mrp: parseInt(seg[1]) || 0,
+      sellingPrice: parseInt(seg[2]) || parseInt(seg[1]) || 0,
+      stock: parseInt(seg[3]) || 0
+    };
+  });
+  return sizes;
+}
+
+async function uploadProductsCSV(e) {
+  try {
+    const file = e.target.files ? e.target.files[0] : e;
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async function(ev) {
+      const text = ev.target.result;
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
+      if (lines.length < 2) { alert('CSV appears empty'); return; }
+      const header = parseCSVLine(lines[0]).map(h => h.toLowerCase());
+      const results = { added: 0, failed: 0, errors: [] };
+      for (let i = 1; i < lines.length; i++) {
+        const cols = parseCSVLine(lines[i]);
+        const row = {};
+        header.forEach((h, idx) => row[h] = cols[idx] || '');
+
+        // Build productData expected by ProductManager.addProduct
+        const productData = {
+          name: row.name || row.productname || row.product || '',
+          brand: row.brand || '',
+          category: row.category || '',
+          barcode: row.barcode || '',
+          imageUrl: row.imageurl || row.image || '',
+          images: (row.images || '').split('|').map(x => x.trim()).filter(Boolean),
+          description: row.description || '',
+          sizes: parseSizesField(row.sizes || ''),
+          totalStock: parseInt(row.totalstock) || undefined
+        };
+
+        try {
+          const res = await ProductManager.addProduct(productData);
+          if (res && res.success) results.added++; else { results.failed++; results.errors.push({line:i+1,error: res && res.error ? res.error : 'unknown'}); }
+        } catch (err) {
+          results.failed++; results.errors.push({line:i+1,error: err.message});
+        }
+      }
+      alert(`Import complete. Added: ${results.added}, Failed: ${results.failed}`);
+      if (results.added > 0) { await loadProducts(); loadProductsAdmin(); }
+      if (results.errors.length) console.error('Import errors:', results.errors);
+    };
+    reader.readAsText(file, 'UTF-8');
+  } catch (err) {
+    console.error('Upload CSV failed:', err);
+    alert('Upload failed: ' + err.message);
+  } finally {
+    // reset file input
+    const input = document.getElementById('csvUploadInput');
+    if (input) input.value = '';
+  }
+}
+
+window.downloadProductsCSV = downloadProductsCSV;
+window.downloadProductsTemplate = downloadProductsTemplate;
+window.uploadProductsCSV = uploadProductsCSV;
 
 async function handleMainSearch() {
   const query = document.getElementById('searchInput').value.toLowerCase();
@@ -1952,6 +2132,7 @@ async function editProductAdmin(productId) {
     if (document.getElementById('productName')) document.getElementById('productName').value = product.name;
     if (document.getElementById('productBrand')) document.getElementById('productBrand').value = product.brand;
     if (document.getElementById('productCategory')) document.getElementById('productCategory').value = product.category;
+    if (document.getElementById('productSubcategory')) document.getElementById('productSubcategory').value = product.subcategory || '';
     if (document.getElementById('productBarcode')) document.getElementById('productBarcode').value = product.barcode;
     if (document.getElementById('productImage')) document.getElementById('productImage').value = product.imageUrl;
     if (document.getElementById('productDescription')) document.getElementById('productDescription').value = product.description || '';
@@ -2041,6 +2222,7 @@ async function saveProduct(e) {
     const barcodeEl = document.getElementById('productBarcode');
     const imageEl = document.getElementById('productImage');
     const descriptionEl = document.getElementById('productDescription');
+    const subcategoryEl = document.getElementById('productSubcategory');
     
     if (!nameEl || !brandEl || !categoryEl || !barcodeEl || !imageEl) {
       alert('Error: Product form fields are missing. Make sure your HTML has all required input fields.');
@@ -2062,6 +2244,7 @@ async function saveProduct(e) {
       brand: brandEl.value.trim(),
       category: categoryEl.value.trim(),
       barcode: barcodeEl.value.trim(),
+      subcategory: subcategoryEl ? subcategoryEl.value.trim() : '',
       imageUrl: mainImageUrl,
       images: allImages,
       description: descriptionEl ? descriptionEl.value.trim() : '',

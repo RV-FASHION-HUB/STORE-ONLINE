@@ -72,6 +72,8 @@
                             </div>
                         </div>
 
+                        
+
                         <!-- Price Range Filter -->
                         <div class="filter-dropdown">
                             <button class="filter-dropdown-btn" onclick="toggleDropdown('priceDropdown')">
@@ -379,7 +381,13 @@
                         <!-- Products Management -->
                         <div id="admin-products" class="admin-section hidden">
                             <h2 class="admin-title">Products</h2>
-                            <button class="btn btn-primary" style="margin-bottom: 20px;" onclick="openProductForm()">+ Add New Product</button>
+                                <div style="display:flex; gap:8px; align-items:center; margin-bottom:20px; flex-wrap:wrap;">
+                                    <button class="btn btn-primary" onclick="openProductForm()">+ Add New Product</button>
+                                    <button class="btn btn-outline" onclick="downloadProductsCSV()">📥 Download CSV</button>
+                                    <button class="btn btn-outline" onclick="downloadProductsTemplate()">📄 Template</button>
+                                    <button class="btn btn-outline" onclick="document.getElementById('csvUploadInput').click()">⬆️ Upload CSV</button>
+                                    <input type="file" id="csvUploadInput" accept=".csv" style="display:none" onchange="uploadProductsCSV(event)">
+                                </div>
                             <div class="table-responsive">
                                 <table id="productsTable">
                                     <thead>
@@ -573,6 +581,7 @@
                         <label>Category *</label>
                         <input type="text" id="productCategory" required>
                     </div>
+                    
                     <div class="form-group">
                         <label>Barcode *</label>
                         <input type="text" id="productBarcode" required>

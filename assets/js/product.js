@@ -79,6 +79,8 @@ export class ProductManager {
         filtered = filtered.filter(p => p.category === category);
       }
 
+      // (no subcategory filtering)
+
       if (brand) {
         filtered = filtered.filter(p => p.brand === brand);
       }
