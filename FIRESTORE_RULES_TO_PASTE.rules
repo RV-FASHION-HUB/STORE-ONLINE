@@ -11,9 +11,6 @@ service cloud.firestore {
       allow update: if request.auth != null && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rating', 'ratingCount']);
       allow delete: if request.auth != null && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.get('isAdmin', false) == true;
     }
-2VM1322 :1 Uncaught ReferenceError: allProducts is not defined
-    at HTMLAnchorElement.onclick (VM1322 :1:35)2VM1322 :1 Uncaught ReferenceError: allProducts is not defined
-    at HTMLAnchorElement.onclick (VM1322 :1:35)
     // Orders
     match /orders/{orderId} {
       allow create: if request.auth != null;
