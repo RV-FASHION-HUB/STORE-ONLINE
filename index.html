@@ -388,6 +388,9 @@
                                     <button class="btn btn-outline" onclick="document.getElementById('csvUploadInput').click()">⬆️ Upload CSV</button>
                                     <input type="file" id="csvUploadInput" accept=".csv" style="display:none" onchange="uploadProductsCSV(event)">
                                 </div>
+                            <div class="form-group" style="max-width: 400px; margin-bottom: 20px;">
+                                <input type="text" id="productsSearch" placeholder="Search by product name, brand, category, or barcode..." style="width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;">
+                            </div>
                             <div class="table-responsive">
                                 <table id="productsTable">
                                     <thead>

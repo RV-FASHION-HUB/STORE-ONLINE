@@ -598,6 +598,9 @@ async function loadFilters() {
   const categories = [...new Set(allProducts.map(p => p.category))];
   const brands = [...new Set(allProducts.map(p => p.brand))];
   
+  // Store all brands for reference
+  window.allBrands = brands;
+  
   // Load categories in header navigation
   const categoriesList = document.getElementById('categoriesList');
   if (categoriesList) {
@@ -616,6 +619,40 @@ async function loadFilters() {
       </label>
     `).join('');
   }
+}
+
+// Update brand filter based on selected category
+function updateBrandFilterForCategory(category) {
+  const brandFilter = document.getElementById('brandFilter');
+  if (!brandFilter) return;
+  
+  // Get brands available in selected category
+  const availableBrands = [...new Set(
+    allProducts
+      .filter(p => p.category === category)
+      .map(p => p.brand)
+  )];
+  
+  // Update brand filter HTML
+  brandFilter.innerHTML = availableBrands.map(brand => `
+    <label class="filter-option">
+      <input type="checkbox" value="${brand}" onchange="applyFilters()">
+      <span>${brand}</span>
+    </label>
+  `).join('');
+}
+
+// Reset brand filter to show all brands
+function resetBrandFilter() {
+  const brandFilter = document.getElementById('brandFilter');
+  if (!brandFilter || !window.allBrands) return;
+  
+  brandFilter.innerHTML = window.allBrands.map(brand => `
+    <label class="filter-option">
+      <input type="checkbox" value="${brand}" onchange="applyFilters()">
+      <span>${brand}</span>
+    </label>
+  `).join('');
 }
 
 async function loadShopPageReviews() {
@@ -674,6 +711,9 @@ function filterByCategory(category) {
   showPage('shop');
   const filtered = allProducts.filter(p => p.category === category);
   displayProducts(filtered);
+  
+  // Update brand filter to show only brands available in selected category
+  updateBrandFilterForCategory(category);
 }
 
 // (no subcategory filter function)
@@ -727,6 +767,9 @@ function resetFilters() {
   document.getElementById('maxPrice').value = '';
   document.getElementById('filterSearch').value = '';
   displayProducts(allProducts);
+  
+  // Reset brand filter to show all brands
+  resetBrandFilter();
   
   // Close filter drawer on mobile after resetting filters
   closeFilterDrawer();
@@ -1938,6 +1981,19 @@ async function loadProductsAdmin() {
       </td>
     </tr>
   `).join('');
+  
+  // Search functionality
+  const searchInput = document.getElementById('productsSearch');
+  if (searchInput) {
+    searchInput.addEventListener('keyup', () => {
+      const searchQuery = searchInput.value.toLowerCase();
+      const rows = document.querySelectorAll('#productsTableBody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchQuery) ? '' : 'none';
+      });
+    });
+  }
 }
 
 async function loadInventory() {
